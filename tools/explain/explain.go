@@ -12,9 +12,9 @@ import (
 	"strconv"
 
 	"github.com/golang/glog"
-	"github.com/rubblelabs/ripple/data"
-	"github.com/rubblelabs/ripple/terminal"
-	"github.com/rubblelabs/ripple/websockets"
+	"github.com/dabankio/ripple/data"
+	"github.com/dabankio/ripple/terminal"
+	"github.com/dabankio/ripple/websockets"
 )
 
 const usage = `Usage: explain [tx hash|ledger sequence|ripple address|-] [options]
