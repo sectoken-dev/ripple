@@ -10,6 +10,7 @@ type TxBase struct {
 	AccountTxnID       *Hash256        `json:",omitempty"`
 	SigningPubKey      *PublicKey      `json:",omitempty"`
 	TxnSignature       *VariableLength `json:",omitempty"`
+	Signers            Signers         `json:",omitempty"`
 	Memos              Memos           `json:",omitempty"`
 	PreviousTxnID      *Hash256        `json:",omitempty"`
 	LastLedgerSequence *uint32         `json:",omitempty"`
@@ -170,11 +171,6 @@ type SignerListSet struct {
 	TxBase
 	SignerQuorum  uint32        `json:",omitempty"`
 	SignerEntries SignerEntries `json:",omitempty"`
-}
-
-type MultiSignedTX struct {
-	TxBase
-	Signers Signers `json:",omitempty"`
 }
 
 func (t *TxBase) GetBase() *TxBase                    { return t }
