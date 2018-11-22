@@ -124,6 +124,12 @@ type SignerEntries []struct {
 	SignerEntry SignerEntry `json:",omitempty"`
 }
 
+type Signers []struct {
+	Account       Account
+	SigningPubKey *PublicKey      `json:",omitempty"`
+	TxnSignature  *VariableLength `json:",omitempty"`
+}
+
 type SignerList struct {
 	leBase
 	Flags         *LedgerEntryFlag `json:",omitempty"`
