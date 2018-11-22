@@ -124,10 +124,14 @@ type SignerEntries []struct {
 	SignerEntry SignerEntry `json:",omitempty"`
 }
 
-type Signers []struct {
+type SignerInfo struct {
 	Account       Account
 	SigningPubKey *PublicKey      `json:",omitempty"`
 	TxnSignature  *VariableLength `json:",omitempty"`
+}
+
+type Signers []struct {
+	Signer SignerInfo `json:",omitempty"`
 }
 
 type SignerList struct {
