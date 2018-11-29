@@ -194,7 +194,7 @@ func readHash(r Reader) (*Hash256, error) {
 	case err != nil:
 		return nil, err
 	case n != len(h):
-		return nil, fmt.Errorf("Bad hash")
+		return nil, fmt.Errorf("bad hash")
 	default:
 		return &h, nil
 	}
@@ -207,7 +207,7 @@ func expectType(r Reader, expected string) (uint16, error) {
 	}
 	name := encodings[*enc]
 	if name != expected {
-		return 0, fmt.Errorf("Unexpected type: %s expected: %s", name, expected)
+		return 0, fmt.Errorf("unexpected type: %s expected: %s", name, expected)
 	}
 	var typ uint16
 	return typ, read(r, &typ)
@@ -274,6 +274,13 @@ func readObject(r Reader, v *reflect.Value) error {
 				err := readObject(r, &s)
 				v.Set(s.Elem())
 				return err
+			case "Signer":
+				var signer Signer
+				s := reflect.ValueOf(&signer)
+				inner := reflect.ValueOf(&signer.Signer)
+				err := readObject(r, &inner)
+				v.Set(s.Elem())
+				return err
 			case "Majority":
 				var majority Majority
 				m := reflect.ValueOf(&majority)
@@ -288,15 +295,15 @@ func readObject(r Reader, v *reflect.Value) error {
 				v.Set(m.Elem())
 				return err
 			default:
-				return fmt.Errorf("Unexpected object: %s for field: %s", v.Type(), name)
+				return fmt.Errorf("unexpected object: %s for field: %s", v.Type(), name)
 			}
 		default:
 			if v.Kind() == reflect.Struct {
-				return fmt.Errorf("Unexpected struct: %s for field: %s", v.Type(), name)
+				return fmt.Errorf("unexpected struct: %s for field: %s", v.Type(), name)
 			}
 			field := getField(v, enc)
 			if !field.CanAddr() {
-				return fmt.Errorf("Missing field: %s %+v", name, enc)
+				return fmt.Errorf("missing field: %s %+v", name, enc)
 			}
 			switch v := field.Addr().Interface().(type) {
 			case Wire:

@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/fatih/color"
 	"github.com/dabankio/ripple/data"
 	"github.com/dabankio/ripple/websockets"
+	"github.com/fatih/color"
 )
 
 type Flag uint32
@@ -55,7 +55,7 @@ func MemoSymbol(tx data.Transaction) string {
 	return BoolSymbol(len(tx.GetBase().Memos) > 0)
 }
 
-func SignSymbol(s data.Signer) string {
+func SignSymbol(s data.SignerAgent) string {
 	valid, err := data.CheckSignature(s)
 	return BoolSymbol(!valid || err != nil)
 }

@@ -11,9 +11,9 @@ import (
 	"sort"
 	"time"
 
+	"github.com/dabankio/ripple/data"
 	"github.com/golang/glog"
 	"github.com/gorilla/websocket"
-	"github.com/dabankio/ripple/data"
 )
 
 const (

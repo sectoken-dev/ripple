@@ -120,26 +120,26 @@ type SignerEntry struct {
 	SignerWeight *uint16  `json:",omitempty"`
 }
 
-type SignerEntries []struct {
+type SignerEntries struct {
 	SignerEntry SignerEntry `json:",omitempty"`
 }
 
-type SignerInfo struct {
-	Account       Account
-	SigningPubKey *PublicKey      `json:",omitempty"`
-	TxnSignature  *VariableLength `json:",omitempty"`
+type Signer struct {
+	Signer struct {
+		Account       *Account        `json:",omitempty"`
+		SigningPubKey *PublicKey      `json:",omitempty"`
+		TxnSignature  *VariableLength `json:",omitempty"`
+	} `json:",omitempty"`
 }
 
-type Signers []struct {
-	Signer SignerInfo `json:",omitempty"`
-}
+type Signers []Signer
 
 type SignerList struct {
 	leBase
 	Flags         *LedgerEntryFlag `json:",omitempty"`
 	OwnerNode     *NodeIndex       `json:",omitempty"`
 	SignerQuorum  *uint32          `json:",omitempty"`
-	SignerEntries SignerEntries    `json:",omitempty"`
+	SignerEntries []SignerEntries  `json:",omitempty"`
 	SignerListID  *uint32          `json:",omitempty"`
 }
 

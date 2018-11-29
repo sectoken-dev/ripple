@@ -30,6 +30,15 @@ func newKey(seed []byte) *btcec.PrivateKey {
 	}
 }
 
+func NewECDSAKeyFromAccountPrivate(pk string) (*ecdsaKey, error) {
+	hash, err := NewRippleHashCheck(pk, RIPPLE_ACCOUNT_PRIVATE)
+	if err != nil {
+		return nil, err
+	}
+	privKey, _ := btcec.PrivKeyFromBytes(btcec.S256(), hash.Payload())
+	return &ecdsaKey{privKey}, nil
+}
+
 // If seed is nil, generate a random one
 func NewECDSAKey(seed []byte) (*ecdsaKey, error) {
 	if seed == nil {
