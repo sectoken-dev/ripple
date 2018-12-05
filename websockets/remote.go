@@ -220,6 +220,20 @@ func (r *Remote) Submit(tx data.Transaction) (*SubmitResult, error) {
 	return cmd.Result, nil
 }
 
+// Synchronously submit a single transaction
+func (r *Remote) SubmitMultiSigned(tx data.Transaction) (*SubmitResult, error) {
+	cmd := &SubmitMultiSignedCommand{
+		Command: newCommand("submit_multisigned"),
+		TxJson:  tx,
+	}
+	r.outgoing <- cmd
+	<-cmd.Ready
+	if cmd.CommandError != nil {
+		return nil, cmd.CommandError
+	}
+	return cmd.Result, nil
+}
+
 // Synchronously submit multiple transactions
 func (r *Remote) SubmitBatch(txs []data.Transaction) ([]*SubmitResult, error) {
 	commands := make([]*SubmitCommand, len(txs))
