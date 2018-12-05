@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"reflect"
 	"sort"
+	"strings"
 	"time"
 
 	"github.com/dabankio/ripple/data"
@@ -39,7 +40,6 @@ type Remote struct {
 // NewRemote returns a new remote session connected to the specified
 // server endpoint URI. To close the connection, use Close().
 func NewRemote(endpoint string) (*Remote, error) {
-	glog.Infoln(endpoint)
 	u, err := url.Parse(endpoint)
 	if err != nil {
 		return nil, err
@@ -531,7 +531,9 @@ func (r *Remote) readPump(inbound chan<- []byte) {
 	for {
 		_, message, err := r.ws.ReadMessage()
 		if err != nil {
-			glog.Errorln(err)
+			if !strings.Contains(err.Error(), "closed network") {
+				glog.Errorln(err)
+			}
 			return
 		}
 		glog.V(2).Infoln(dump(message))
