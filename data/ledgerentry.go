@@ -27,7 +27,7 @@ type AccountRoot struct {
 	TickSize      *uint8           `json:",omitempty"`
 	TransferRate  *uint32          `json:",omitempty"`
 	Domain        *VariableLength  `json:",omitempty"`
-	Signers       *VariableLength  `json:",omitempty"`
+	SignerLists   []SignerList     `json:"signer_lists,omitempty"`
 }
 
 type RippleState struct {

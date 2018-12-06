@@ -225,8 +225,9 @@ type RipplePathFindResult struct {
 
 type AccountInfoCommand struct {
 	*Command
-	Account data.Account       `json:"account"`
-	Result  *AccountInfoResult `json:"result,omitempty"`
+	Account     data.Account       `json:"account"`
+	SignerLists bool               `json:"signer_lists"`
+	Result      *AccountInfoResult `json:"result,omitempty"`
 }
 
 type AccountInfoResult struct {

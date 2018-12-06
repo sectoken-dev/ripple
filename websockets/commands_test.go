@@ -1,7 +1,10 @@
 package websockets
 
 import (
+	"bytes"
 	"encoding/json"
+	"github.com/dabankio/ripple/crypto"
+	"github.com/pkg/errors"
 	"io/ioutil"
 	"testing"
 
@@ -159,4 +162,136 @@ func (s *MessagesSuite) TestAccountInfoResponse(c *C) {
 	c.Assert(msg.Result.AccountData.LedgerEntryType, Equals, data.ACCOUNT_ROOT)
 	c.Assert(*msg.Result.AccountData.Sequence, Equals, uint32(546))
 	c.Assert(msg.Result.AccountData.Balance.String(), Equals, "10321199.422233")
+}
+
+func TestRipple(t *testing.T) {
+	var destTag *uint32
+
+	dest, err := data.NewAccountFromAddress("rPuPENy4A6LT2rLXpznmhonAVSMDiDcprQ")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	account, err := data.NewAccountFromAddress("rPuPENy4A6LT2rLXpznmhonAVSMDiDcprQ")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	client, err := NewRemote("wss://s.altnet.rippletest.net:51233")
+	if err != nil {
+		err = errors.Wrap(err, "x.Client")
+		t.Fatal(err)
+	}
+	defer client.Close()
+	// 取账户流水号
+	accountInfo, err := client.AccountInfo(*account)
+	if err != nil {
+		err = errors.Wrap(err, "client.AccountInfo")
+		t.Fatal(err)
+	}
+	for i := range accountInfo.AccountData.SignerLists[0].SignerEntries {
+		t.Log(accountInfo.AccountData.SignerLists[0].SignerEntries[i].SignerEntry.Account)
+		t.Log(*accountInfo.AccountData.SignerLists[0].SignerEntries[i].SignerEntry.SignerWeight)
+	}
+
+	// 取费用
+	feeInfo, err := client.Fee()
+	if err != nil {
+		err = errors.Wrap(err, "client.Fee()")
+		t.Fatal(err)
+	}
+	// 费用的5倍作为矿工费
+	feeRatio, _ := data.NewNativeValue(5)
+	openLedgerFee, err := feeInfo.Drops.OpenLedgerFee.Multiply(*feeRatio)
+	if err != nil {
+		err = errors.Wrap(err, "feeInfo.Drops.OpenLedgerFee.Multiply")
+		t.Fatal(err)
+	}
+
+	// 把数目转换为drops
+	drops, err := data.NewAmount(int64(0.13 * 1e6))
+	if err != nil {
+		err = errors.Wrap(err, "data.NewAmount")
+		t.Fatal(err)
+	}
+
+	flag := data.TxCanonicalSignature
+	tx := &data.Payment{
+		TxBase: data.TxBase{
+			Flags:           &flag,
+			TransactionType: data.PAYMENT,
+			Account:         *account,
+			Sequence:        *accountInfo.AccountData.Sequence,
+			Fee:             *openLedgerFee,
+		},
+		Destination:    *dest,
+		Amount:         *drops,
+		DestinationTag: destTag,
+	}
+	_, rawData, err := data.Raw(tx)
+	if err != nil {
+		err = errors.Wrap(err, "data.Raw")
+		t.Fatal(err)
+	}
+	t.Logf("%X\n", rawData)
+
+	tx1, err := data.ReadTransaction(bytes.NewReader(rawData))
+	if err != nil {
+		err = errors.Wrap(err, "ReadTransaction")
+		t.Fatal(err)
+	}
+
+	// rEUuN4PGhedTqRsQhiWFfbrcNANKFzpyZ3
+	key1, err := crypto.NewECDSAKeyFromAccountPrivate("pwCh84rQH2yoe5adZy5qV4L4EqKAzzXmLpxJhVxHuJRyirUaage")
+	if err != nil {
+		err = errors.Wrap(err, "Sign.NewECDSAKeyFromAccountPrivate")
+		t.Fatal(err)
+	}
+
+	err = data.SignFor(tx1, key1, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	_, rawData, err = data.Raw(tx1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("%X\n", rawData)
+
+	tx2, err := data.ReadTransaction(bytes.NewReader(rawData))
+	if err != nil {
+		err = errors.Wrap(err, "ReadTransaction")
+		t.Fatal(err)
+	}
+
+	// rKmS3rb4aVQejFdLNieGX4ffZ4uRBA9qHu
+	key2, err := crypto.NewECDSAKeyFromAccountPrivate("pwdoRrVsp9XA7HC73RVvV8bsrvWY7rmyEQRF9m5yqPrJramRLN5")
+	if err != nil {
+		err = errors.Wrap(err, "Sign.NewECDSAKeyFromAccountPrivate")
+		t.Fatal(err)
+	}
+
+	err = data.SignFor(tx2, key2, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	hashdata, rawData, err := data.Raw(tx2)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("%X\n", rawData)
+	t.Log(hashdata.String())
+
+	// result, err := client.Submit(tx2)
+	// // result, err := client.SubmitMultiSigned(tx2)
+	// if err != nil {
+	// 	t.Fatal(err)
+	// }
+	// t.Log(result.TxBlob)
+	// t.Log(result.Tx)
+	// t.Log(result.EngineResult.Human())
+	// t.Log(result.EngineResultMessage, result.EngineResultCode)
+	return
 }
