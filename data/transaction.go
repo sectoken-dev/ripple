@@ -226,6 +226,22 @@ func (t *TxBase) InitialiseForSigning() {
 	}
 }
 
+func (t *TxBase) SortSigners(signerEntries []SignerEntries) {
+	var signers Signers
+	copy(t.Signers, signers)
+	for i := range signerEntries {
+		signer := signerEntries[i].SignerEntry.Account
+		for j := range t.Signers {
+			if t.Signers[j].Signer.Account.Equals(*signer) {
+				signers = append(signers, t.Signers[j])
+			}
+		}
+	}
+	if signers != nil {
+		t.Signers = signers
+	}
+}
+
 func (t *TxBase) InitialiseForMultiSigning() {
 	if t.Signers == nil {
 		t.Signers = Signers{}

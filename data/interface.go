@@ -43,6 +43,7 @@ type LedgerEntry interface {
 type Transaction interface {
 	SignerAgent
 	GetTransactionType() TransactionType
+	SortSigners([]SignerEntries)
 	GetBase() *TxBase
 	PathSet() PathSet
 }
