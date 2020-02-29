@@ -179,6 +179,17 @@ func (t *TxBase) GetTransactionType() TransactionType { return t.TransactionType
 func (t *TxBase) Prefix() HashPrefix                  { return HP_TRANSACTION_ID }
 func (t *TxBase) GetPublicKey() *PublicKey            { return t.SigningPubKey }
 func (t *TxBase) GetSignature() *VariableLength       { return t.TxnSignature }
+func (t *TxBase) GetSignatures() []*VariableLength {
+	if t.Signers == nil {
+		return nil
+	}
+	var sigs []*VariableLength
+	for i := range t.Signers {
+		sigs = append(sigs, t.Signers[i].Signer.TxnSignature)
+	}
+	return sigs
+
+}
 func (t *TxBase) SigningPrefix() HashPrefix           { return t.signingPrefix() }
 func (t *TxBase) PathSet() PathSet                    { return PathSet(nil) }
 func (t *TxBase) GetHash() *Hash256                   { return &t.Hash }

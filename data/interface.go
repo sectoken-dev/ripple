@@ -17,6 +17,7 @@ type SignerAgent interface {
 	SigningPrefix() HashPrefix
 	GetPublicKey() *PublicKey
 	GetSignature() *VariableLength
+        GetSignatures() []*VariableLength
 	AddSignature(*Signer)
 }
 
