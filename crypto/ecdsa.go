@@ -39,6 +39,11 @@ func NewECDSAKeyFromAccountPrivate(pk string) (*ecdsaKey, error) {
 	return &ecdsaKey{privKey}, nil
 }
 
+func NewECDSAKeyFromPrivate(pk []byte) (*ecdsaKey, error) {
+	privKey, _ := btcec.PrivKeyFromBytes(btcec.S256(), pk)
+	return &ecdsaKey{privKey}, nil
+}
+
 // If seed is nil, generate a random one
 func NewECDSAKey(seed []byte) (*ecdsaKey, error) {
 	if seed == nil {
