@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/dabankio/ripple/crypto"
+	"github.com/sectoken-dev/ripple/crypto"
 )
 
 type Amount struct {

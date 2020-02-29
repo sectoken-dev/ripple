@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/dabankio/ripple/config"
+	"github.com/sectoken-dev/ripple/config"
 )
 
 var (

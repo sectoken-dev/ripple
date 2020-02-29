@@ -3,7 +3,7 @@ package websockets
 import (
 	"encoding/json"
 
-	"github.com/dabankio/ripple/data"
+	"github.com/sectoken-dev/ripple/data"
 )
 
 // Fields from subscribed ledger stream messages

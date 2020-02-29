@@ -1,7 +1,7 @@
 package data
 
 import (
-	. "github.com/dabankio/ripple/testing"
+	. "github.com/sectoken-dev/ripple/testing"
 	. "gopkg.in/check.v1"
 )
 

@@ -12,7 +12,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/dabankio/ripple/data"
+	"github.com/sectoken-dev/ripple/data"
 	"github.com/golang/glog"
 	"github.com/gorilla/websocket"
 )

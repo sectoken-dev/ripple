@@ -1,7 +1,7 @@
 package data
 
 import (
-	"github.com/dabankio/ripple/crypto"
+	"github.com/sectoken-dev/ripple/crypto"
 )
 
 func Sign(s SignerAgent, key crypto.Key, sequence *uint32) error {

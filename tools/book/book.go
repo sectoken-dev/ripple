@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/dabankio/ripple/data"
-	"github.com/dabankio/ripple/terminal"
-	"github.com/dabankio/ripple/websockets"
+	"github.com/sectoken-dev/ripple/data"
+	"github.com/sectoken-dev/ripple/terminal"
+	"github.com/sectoken-dev/ripple/websockets"
 )
 
 const usage = `Usage: book [currency currency] [options]
